@@ -18,25 +18,37 @@ import Vector from './../lib/Vector';
 
 import { SOCKET_LIST, initPack, removePack } from './../db';
 
-export const connectSocket = (socket) => {
+/**
+ * 
+ * @param {*} socket socket for the client
+ */
+export const connectSocket = ( socket ) => {
+
     var t = new Date().getTime().toString(); 
 	socket.id = createHash('md5').update(t).digest("hex");
 	SOCKET_LIST[socket.id] = socket;
+    
     //handles when user enters name and presses enter
-	socket.on(ENTERGAME_REQUEST, (data) => { 
+	socket.on( ENTERGAME_REQUEST, ( data ) => { 
+    
         Ship.onConnect(socket, data.playerId, data.playerName, data.color , new Vector(0, 0, 0));
         SOCKET_PLAYER_MAP[socket.id] = data.playerId;
         socket.emit(ENTERGAME_RESPONSE, { selfId: data.playerId });
-	});
+    
+    });
 	
-	socket.on('disconnect', () => {
+	socket.on( DISCONNECT, () => {
+
         console.log('in disconnect, deleted player');
+        // delete player
         delete SOCKET_LIST[socket.id];        
         Ship.onDisconnect(socket);
+
 	});
 
-    
-    setInterval(function(){
+    // sends socket events to all open sockets at 25FPS
+    setInterval( () => {
+
         let initializerPack = {
             ship: initPack.ship,
             bomb: initPack.bomb,

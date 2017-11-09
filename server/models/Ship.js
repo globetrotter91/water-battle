@@ -5,8 +5,20 @@ import { SHIP_LIST, SOCKET_LIST, SOCKET_PLAYER_MAP, initPack, removePack } from 
 import { INITIALIZE, EVENT_HAPPENED, GAME_LOST } from './../constants';
 import { Euler, Vector3 } from 'three';
 
+/**
+ * @class Ship
+ * @description This class deals with creation, removal and position management of the ship\
+ */
 class Ship extends Entity {
     
+    /**
+     * 
+     * @param {*} id id of the ship
+     * @param {*} name name of the player
+     * @param {*} color //TODO optional parameter for later use
+     * @param {*} position postion of the ship
+     * @param {*} socketId socketid of the player to map with ship id in the list
+     */
     constructor(id, name, color, position, socketId) {
 
         super(position);
@@ -27,16 +39,24 @@ class Ship extends Entity {
 
     }
 
+    /**
+     * //TODO
+     * @description called when game is lost
+     */
     gameLost() {
 
-		var socket = SOCKET_LIST[this.socketId];
-		socket.emit(GAME_LOST, {score: this.score});
-		delete SHIP_LIST[this.id];
-		removePack.ship.push(this.id);
+		var socket = SOCKET_LIST[ this.socketId ];
+		socket.emit( GAME_LOST, { score: this.score } );
+		delete SHIP_LIST[ this.id ];
+        removePack.ship.push( this.id );
+        
     }
     
-
+    /**
+     * @description used for changing the speed and angle of the ship based on the key events
+     */
     updateWithCommands() {
+
         var targetSpeed = 0.0;
         var targetAngle = 0.0;
 
@@ -50,8 +70,6 @@ class Ship extends Entity {
         var curSpeed = this.speed ;
         this.speed = curSpeed + ( targetSpeed - curSpeed ) * 0.02;
 
-        
-        //console.log(this);
         if(this.pressingLeft) {
             targetAngle = Math.PI * 0.005;
 		}			
@@ -67,30 +85,39 @@ class Ship extends Entity {
         
     }
 
+    /**
+     * @description updates the position of the ship by calculating displacement based on angle and speed
+     * throws bomb if the attack button is pressed.
+     */
     update() {
+        
         this.updateWithCommands();
         this.rotation.y += this.angle;
-        var shipDisplacement = (new Vector3(0, 0, -1)).applyEuler(this.rotation).multiplyScalar( 10.0 * this.speed );
+        var shipDisplacement = (new Vector3(0, 0, -1)).applyEuler( this.rotation ).multiplyScalar( 10.0 * this.speed );
         this.position.add( shipDisplacement );
-        //console.log(this.position);
-        //console.log(this.pressingAttack);
         if(this.pressingAttack) {
-            //console.log(this.position);
-            //console.log('pressing attacj', this.angle);
             this.throwBomb();
         }
+
     }
 
+    /**
+     * @description throws the bomb from the position of the ship
+     */
     throwBomb() {
-        //let aimAngle = (this.mouseAngle<0)?360 + this.mouseAngle:this.mouseAngle;	
 
         let position = new Vector(this.position.X, this.position.Y, this.position.Z); //this.position;
         let id = this.id;
         let bomb = new Bomb(position, this.angle , id);
         bomb.initiate(); 
+
     }
 
+    /**
+     * @return initial data for a ship
+     */
     getInitPack(){
+
 		return {
             id: this.id,
             name: this.name,
@@ -98,26 +125,41 @@ class Ship extends Entity {
             score: this.score,
 			lives: this.lives, 
             color: this.color, 
-		};		
+        };		
+        
     }
     
+    /**
+     * @return update data for a ship
+     */
 	getUpdatePack(){
+
 		return {
             id: this.id,
             position: this.position,
 			score:this.score,
             lives: this.lives, 
             angle: this.angle
-		}	
+        }	
+
 	}
 
+    /**
+     * adds ship to the global ship list
+     */
     initiate() {
+        //TODO: add db support when a new player joins 
         SHIP_LIST[this.id] = this;
         initPack.ship.push(this.getInitPack());
+
     }
 }
 
-Ship.onConnect = (socket , playerId, name, color, position) => {
+/**
+ * @description Onconnect property attached to ship class to call it when a player connects
+ * Creates a object of the Ship class and adds scoket events to it.
+ */
+Ship.onConnect = ( socket , playerId, name, color, position ) => {
     
     let ship = new Ship(playerId, name, color, position, socket.id);
     ship.initiate();
@@ -135,37 +177,46 @@ Ship.onConnect = (socket , playerId, name, color, position) => {
             ship.pressingAttack = data.state;
 		else if(data.inputId === 'mouseAngle')
 			ship.mouseAngle = data.state;
-	});
-	/*	
-	socket.emit(INITIALIZE,{
-		selfId: playerId,
-		ship: Ship.getAllInitPack(),
-		bomb: Bomb.getAllInitPack(),
-    })
-    */
+    });
+    
 }
 
+/**
+ * @description complete list of all the ships there are.
+ */
 Ship.getAllInitPack = () => {
+
 	var ships = [];
 	for(var i in SHIP_LIST) {
         ships.push(SHIP_LIST[i].getInitPack());
     }		
-	return ships;
+    return ships;
+    
 }
 
-Ship.onDisconnect = (socket) => {
+/**
+ * @description deletes the player from the list when player disconnects
+ */
+Ship.onDisconnect = ( socket ) => {
+
 	delete SHIP_LIST[SOCKET_PLAYER_MAP[socket.id]];
-	removePack.ship.push(SOCKET_PLAYER_MAP[socket.id]);
+    removePack.ship.push(SOCKET_PLAYER_MAP[socket.id]);
+    
 }
 
+/**
+ * @description Updates all the ships in the list
+ */
 Ship.update = () => {
+
 	var pack = [];
 	for(var i in SHIP_LIST){
 		var ship = SHIP_LIST[i];
 		ship.update();
 		pack.push(ship.getUpdatePack());		
 	}
-	return pack;	
+    return pack;	
+    
 }
 
 export default Ship;

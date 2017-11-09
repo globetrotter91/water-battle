@@ -80,14 +80,20 @@ var _Game2 = _interopRequireDefault(_Game);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var lastTime = new Date().getTime();
+// TODO: clean this file
 
-var windowObj = new _Window2.default(0, 0, game);
+
+// creating object of the window class
+var windowObj = new _Window2.default(0, 0);
+// initialise window object
 windowObj.initialize();
+// create the game instance with width and height from window.
 var game = new _Game2.default(windowObj.width, windowObj.height);
+// initialise the game
 game.initialize();
 game.resize(windowObj.width, windowObj.height);
 
+// render function is used to request frames at 60FPS and update the game.
 var render = function render() {
     requestAnimationFrame(render);
     game.update();
@@ -110,7 +116,18 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * @class Window
+ * @description Class for handling window events and setting defaults for the game
+ * @author Satyam Saxena
+ */
 var Window = function () {
+    /**
+     * 
+     * @param {*} height the height of the window
+     * @param {*} width the width of the window
+     * @param {*} game the object of the game
+     */
     function Window(height, width, game) {
         _classCallCheck(this, Window);
 
@@ -118,27 +135,42 @@ var Window = function () {
         this.width = width;
         this.game = game;
     }
+    /**
+     * @description this method initializes the game height and width and adds resize handler
+     */
+
 
     _createClass(Window, [{
         key: "initialize",
         value: function initialize() {
-            this.updateSize();
 
-            // Create callbacks from keyboard
+            this.updateSize();
             window.onresize = function (inEvent) {
-                this.updateSize();
+                this.handleWindowResize();
             };
         }
+
+        /**
+         * @description this method sets the height and width to the inner with and inner height of the window
+         */
+
     }, {
         key: "updateSize",
         value: function updateSize() {
+
             this.width = window.innerWidth;
             this.height = window.innerHeight;
         }
+
+        /**
+         * @description this method handles the window resize
+         */
+
     }, {
-        key: "resizeCallBack",
-        value: function resizeCallBack(inWidth, inHeight) {
-            this.game.resize(inWidth, inHeight);
+        key: "handleWindowResize",
+        value: function handleWindowResize(inWidth, inHeight) {
+            //TODO: resize handler foe the game
+            //this.game.resize( inWidth, inHeight );
         }
     }]);
 
@@ -160,29 +192,34 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _globals = __webpack_require__(3);
-
-var _globals2 = _interopRequireDefault(_globals);
-
-var _Ocean = __webpack_require__(4);
+var _Ocean = __webpack_require__(3);
 
 var _Ocean2 = _interopRequireDefault(_Ocean);
 
-var _Player = __webpack_require__(5);
+var _Player = __webpack_require__(4);
 
 var _Player2 = _interopRequireDefault(_Player);
 
-var _Bomb = __webpack_require__(6);
+var _Bomb = __webpack_require__(5);
 
 var _Bomb2 = _interopRequireDefault(_Bomb);
 
-var _constants = __webpack_require__(7);
+var _constants = __webpack_require__(6);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * @class Game 
+ * @description Main class for the game. Contains initialization server communication functions
+ */
 var Game = function () {
+    /**
+     * 
+     * @param {*} width the width of the game container
+     * @param {*} height the height of the game container
+     */
     function Game(width, height) {
         _classCallCheck(this, Game);
 
@@ -191,45 +228,24 @@ var Game = function () {
         this.scene = new THREE.Scene();
         this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.ocean = null;
-        this.commands = {
-            states: {
-                up: false,
-                right: false,
-                down: false,
-                left: false
-            },
-            movements: {
-                speed: 0.0,
-                angle: 0.0
-            }
-        };
         this.width = width;
         this.height = height;
         this.selfId = null;
         this.playerList = {};
         this.bombList = {};
+        // socket coection to serve
         this.socket = io.connect(window.location.protocol + '//' + window.location.host);
+        // binding the socket events coming from the server
         this.bindSocketEvents();
     }
 
+    /**
+     * @description This method is used to set the extensions of WEBGL and set them to the renderer. 
+     * Sets up the user controls ans calls other methods required for rendering the scene.
+     */
+
+
     _createClass(Game, [{
-        key: 'serverRequest',
-        value: function serverRequest(playerName, color) {
-            var data = 'name=' + playerName + '&color=' + color;
-
-            var xhttp = new XMLHttpRequest();
-            var that = this;
-            xhttp.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-
-                    var resJson = JSON.parse(this.responseText);
-                    that.socket.emit(_constants.ENTERGAME_REQUEST, { playerId: resJson.id, playerName: resJson.name, color: resJson.color });
-                }
-            };
-            xhttp.open("GET", _constants.API_URL + '/users?' + data, true);
-            xhttp.send();
-        }
-    }, {
         key: 'initialize',
         value: function initialize() {
 
@@ -253,32 +269,25 @@ var Game = function () {
             this.initializeLoader();
             this.initializeCommands();
             this.initializeScene();
+
+            //TODO: Make this dyamic. Take user input for name
             this.serverRequest('saty', 'ff00ff');
         }
-    }, {
-        key: 'initializeScene',
-        value: function initializeScene() {
-            this.setLighting();
-            this.setOcean();
-            this.loadSkyBox();
-            // show 
-        }
-    }, {
-        key: 'loadPlayer',
-        value: function loadPlayer() {
-            this.player = new _Player2.default(1, 'saty', 10, 0, this);
-            this.player.initializeMe();
-        }
+
+        /**
+         * @description This method is used for initializing the image loader and loading manager for the game
+         * All images and textures can be loaded using this method
+         * The assets loaded can also be logged on the console.
+         */
+
     }, {
         key: 'initializeLoader',
         value: function initializeLoader() {
 
             this.loadingManager = new THREE.LoadingManager();
-
             var log = function log(message, type, timeout) {
                 console.log(message);
             };
-
             var delay = 1500; // constantise
             this.loadingManager.onProgress = function (item, loaded, total) {
                 log('Loaded ' + loaded + '/' + total + ':' + item, 'info', delay);
@@ -289,9 +298,92 @@ var Game = function () {
             this.loadingManager.onError = function () {
                 log('Loading error.', 'error', delay);
             };
-
             this.imageLoader = new THREE.ImageLoader(this.loadingManager);
         }
+
+        /**
+         * @description This method initialises the commands and keyboard events to send a socket event when the keys are pressed/
+         */
+
+    }, {
+        key: 'initializeCommands',
+        value: function initializeCommands() {
+            var _this = this;
+
+            //handling the key down event 
+            //fires a event sending the event data to server
+            //-- helps in movement of the player
+            document.onkeydown = function (event) {
+
+                if (_this.socket) {
+                    if (event.keyCode === 39) {
+                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'right', state: true });
+                    } //right
+
+                    else if (event.keyCode === 40) {
+                            _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'down', state: true });
+                        } //down
+
+                        else if (event.keyCode === 37) {
+                                _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'left', state: true });
+                            } //left
+
+                            else if (event.keyCode === 38) {
+                                    _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'up', state: true });
+                                } // up
+
+                                else if (event.keyCode === 32) {
+                                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack', state: true });
+                                    } // space
+                }
+            };
+
+            //handling the key up event
+            //fires a event sending the event data to server based on the key codes
+            //-- helps in stopping movement of the player
+            document.onkeyup = function (event) {
+
+                if (_this.socket) {
+                    if (event.keyCode === 39) {
+                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'right', state: false });
+                    } //right
+
+                    else if (event.keyCode === 40) {
+                            _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'down', state: false });
+                        } //down
+
+                        else if (event.keyCode === 37) {
+                                _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'left', state: false });
+                            } //left
+
+                            else if (event.keyCode === 38) {
+                                    _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'up', state: false });
+                                } // up
+
+                                else if (event.keyCode === 32) {
+                                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack', state: false });
+                                    } // space
+                }
+            };
+        }
+
+        /**
+         * @description This method is sets the lightning, sets the ocean board and sets loads the sky-view
+         */
+
+    }, {
+        key: 'initializeScene',
+        value: function initializeScene() {
+
+            this.setLighting();
+            this.setOcean();
+            this.loadSkyBox();
+        }
+
+        /**
+         * @description This method is used to set the lightning in the scene using direction and ambient light.
+         */
+
     }, {
         key: 'setLighting',
         value: function setLighting() {
@@ -301,12 +393,23 @@ var Game = function () {
             this.mainDirectionalLight.position.set(-30, 30, -30);
             this.scene.add(this.mainDirectionalLight, new THREE.AmbientLight(0x888888));
         }
+
+        /**
+         * @description This method is used to set the ocean in the scene.
+         */
+
     }, {
         key: 'setOcean',
         value: function setOcean() {
+
             this.ocean = new _Ocean2.default(this);
             this.ocean.initiate();
         }
+
+        /**
+         * @description This method is used to load the skybox in which the game runs and it sets up the camera.
+         */
+
     }, {
         key: 'loadSkyBox',
         value: function loadSkyBox() {
@@ -326,11 +429,17 @@ var Game = function () {
 
             this.updateEnvironment();
         }
+
+        /**
+         * @description This method renders the environment of the game things like the clouds and sunshine
+         */
+
     }, {
         key: 'updateEnvironment',
         value: function updateEnvironment() {
-            var directionalLightPosition = new THREE.Vector3(-1, 0.5, 0.8);;
-            var directionalLightColor = new THREE.Color(1, 0.95, 0.8);;
+
+            var directionalLightPosition = new THREE.Vector3(-1, 0.5, 0.8);
+            var directionalLightColor = new THREE.Color(1, 0.95, 0.8);
             this.mainDirectionalLight.position.copy(directionalLightPosition);
             this.mainDirectionalLight.color.copy(directionalLightColor);
             var cubeMap = new THREE.CubeTexture([]);
@@ -361,148 +470,100 @@ var Game = function () {
 
             this.skyBox.material.uniforms['tCube'].value = cubeMap;
         }
-    }, {
-        key: 'initializeCommands',
-        value: function initializeCommands() {
-            var _this = this;
 
-            //handling the key down event 
-            //fires a event sending the event data to server
-            //-- helps in movement of the player
-            document.onkeydown = function (event) {
-                if (_this.socket) {
-                    if (event.keyCode === 39) {
-                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'right', state: true });
-                        //this.commands.states.right = true;
-                    } //right
+        /**
+         * @description This method adds the scene instance and camera instance to the renderer.
+         */
 
-                    else if (event.keyCode === 40) {
-                            _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'down', state: true });
-                            //this.commands.states.down = true;
-                        } //down
-
-                        else if (event.keyCode === 37) {
-                                _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'left', state: true });
-                                //this.commands.states.left = true;
-                            } //left
-
-                            else if (event.keyCode === 38) {
-                                    _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'up', state: true });
-                                    //this.commands.states.up = true;
-                                } // up
-                                else if (event.keyCode === 32) {
-                                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack', state: true });
-                                    }
-
-                    //}		
-                }
-
-                //handling the key up event 
-                //fires a event sending the event data to server based on the key codes
-                //-- helps in stopping movement of the player
-                document.onkeyup = function (event) {
-                    //if (this.socket) {
-                    if (event.keyCode === 39) {
-                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'right', state: false });
-                        //this.commands.states.right = false;
-                    } //right
-
-                    else if (event.keyCode === 40) {
-                            _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'down', state: false });
-                            //this.commands.states.down = false;
-                        } //down
-
-                        else if (event.keyCode === 37) {
-                                _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'left', state: false });
-                                //this.commands.states.left = false;
-                            } //left
-
-                            else if (event.keyCode === 38) {
-                                    _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'up', state: false });
-                                    //this.commands.states.up = false;
-                                } // up
-                                else if (event.keyCode === 32) {
-                                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack', state: false });
-                                    }
-                };
-            };
-        }
     }, {
         key: 'display',
         value: function display() {
-            //this.groupShip.position.x = 4000;
             this.renderer.render(this.scene, this.camera);
         }
+
+        /**
+         * @description This method updates every frame of the game.
+         */
+
     }, {
         key: 'update',
         value: function update() {
 
-            // Update camera position
             if (this.camera.position.y < 0.0) {
                 this.camera.position.y = 2.0;
             }
 
-            //console.log(this.playerList);
-            //this.updateCommands();
-
-            ///this.player.update(this.commands.movements.speed, this.commands.movements.angle);
-            //console.log(this.player.object.position, this.player.object.rotation);
-            //var currentTime = new Date().getTime();
-            //this.ocean.deltaTime = ( currentTime - globals.lastTime ) / 1000 || 0.0;
-            //globals.lastTime = currentTime;
-
-            //var time = performance.now() * 0.001;
             this.ocean.update();
-            //this.controls.update();
             this.display();
         }
+
+        /**
+         * //@TODO
+         * @param {*} inWidth  width to resize to
+         * @param {*} inHeight height to resize to
+         */
+
     }, {
         key: 'resize',
         value: function resize(inWidth, inHeight) {
-
+            // TODO: implement the function // currently not working
             this.camera.aspect = inWidth / inHeight;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(inWidth, inHeight);
             this.display();
         }
+
+        /**
+         * 
+         * @param {*} data data from the server
+         * @description This function handles the game start event
+         */
+
     }, {
-        key: 'serverResponseEnterGame',
-        value: function serverResponseEnterGame(data) {
-            console.log('init game', data);
+        key: 'handleGameStarted',
+        value: function handleGameStarted(data) {
             this.selfId = data.selfId;
         }
-    }, {
-        key: 'initializeSocketEvent',
-        value: function initializeSocketEvent(data) {
-            var _this2 = this;
 
-            if (data.bomb.length > 0) {
-                //console.log(data); 
-            }
+        /**
+         * 
+         * @param {*} data data from the server
+         * @description This function handles the initialise event from the server
+         */
+
+    }, {
+        key: 'handleInitialized',
+        value: function handleInitialized(data) {
+            var _this2 = this;
 
             data.ship.forEach(function (ship, idx) {
                 var player = new _Player2.default(ship.id, ship.name, ship.lives, ship.score, _this2, ship.position);
+                player.initialize();
                 if (ship.id === _this2.selfId) {
-                    player.initializeMe();
-                } else {
-                    player.initialize();
+                    player.initializeControls();
                 }
 
                 _this2.playerList[ship.id] = player;
-                //console.log(this.playerList);
             });
 
             data.bomb.forEach(function (bomb, idx) {
-                //console.log(bomb);
-                var bomb = new _Bomb2.default(bomb.id, _this2, bomb.position);
-                bomb.initialize();
-                _this2.bombList[bomb.id] = bomb;
-                //console.log(this.bombList);
+                if (!_this2.bombList[bomb.id]) {
+                    var bomb = new _Bomb2.default(bomb.id, _this2, bomb.position);
+                    bomb.initialize();
+                    _this2.bombList[bomb.id] = bomb;
+                }
             });
         }
+
+        /**
+         * 
+         * @param {*} data data from the server
+         * @description This function handles the update event from the server
+         */
+
     }, {
-        key: 'updateSocketEvent',
-        value: function updateSocketEvent(data) {
+        key: 'handleUpdated',
+        value: function handleUpdated(data) {
             var _this3 = this;
 
             data.ship.forEach(function (ship, idx) {
@@ -517,9 +578,16 @@ var Game = function () {
                 }
             });
         }
+
+        /**
+         * 
+         * @param {*} data data from the server
+         * @description This function handles the remove event from the server
+         */
+
     }, {
-        key: 'removeSocketEvent',
-        value: function removeSocketEvent(data) {
+        key: 'handleRemoved',
+        value: function handleRemoved(data) {
             var _this4 = this;
 
             data.ship.forEach(function (shipId, idx) {
@@ -536,27 +604,66 @@ var Game = function () {
                 }
             });
         }
+
+        /**
+         * //TODO
+         * @param {*} data data from the server
+         * @description This function handles the game over event from the server
+         */
+
     }, {
-        key: 'overSocketEvent',
-        value: function overSocketEvent(data) {
+        key: 'handleGameEnded',
+        value: function handleGameEnded(data) {
             console.log('game over bitch', data);
+            //TODO : implement game over logic and UI
         }
+
+        /**
+         * 
+         * @description This function binds the socket events and data from the server
+         */
+
     }, {
         key: 'bindSocketEvents',
         value: function bindSocketEvents() {
 
-            this.socket.on(_constants.ENTERGAME_RESPONSE, this.serverResponseEnterGame.bind(this));
+            this.socket.on(_constants.ENTERGAME_RESPONSE, this.handleGameStarted.bind(this));
             // handling server response when a player is initialized
-            this.socket.on(_constants.INITIALIZE, this.initializeSocketEvent.bind(this));
+            this.socket.on(_constants.INITIALIZE, this.handleInitialized.bind(this));
 
             // handling server response when a player is moving or attacking
-            this.socket.on(_constants.UPDATE, this.updateSocketEvent.bind(this));
+            this.socket.on(_constants.UPDATE, this.handleUpdated.bind(this));
 
             // handling server response when a player is removed
-            this.socket.on(_constants.REMOVE, this.removeSocketEvent.bind(this));
+            this.socket.on(_constants.REMOVE, this.handleRemoved.bind(this));
 
             // handling server response when a player has lost
-            this.socket.on(_constants.GAME_LOST, this.overSocketEvent.bind(this));
+            this.socket.on(_constants.GAME_LOST, this.handleGameEnded.bind(this));
+        }
+
+        /**
+         * 
+         * @param {*} playerName name of the player 
+         * @param {*} color //TODO: this variable can be used for taking some other iformation from the player before entering the game
+         * @description This method sends the request to the server when the users enters name. According the server response the game is initialised.
+         */
+
+    }, {
+        key: 'serverRequest',
+        value: function serverRequest(playerName, color) {
+
+            var data = 'name=' + playerName + '&color=' + color;
+            var xhttp = new XMLHttpRequest();
+            var that = this;
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+
+                    var resJson = JSON.parse(this.responseText);
+                    that.socket.emit(_constants.ENTERGAME_REQUEST, { playerId: resJson.id, playerName: resJson.name, color: resJson.color });
+                }
+            };
+            xhttp.open('GET', _constants.API_URL + '/users?' + data, true);
+            xhttp.send();
         }
     }]);
 
@@ -573,183 +680,85 @@ exports.default = Game;
 
 
 Object.defineProperty(exports, "__esModule", {
-                                value: true
-});
-exports.default = {
-                                selfId: null, // selfId is the id of the player who is logged in 
-                                //-- helps to differentiate the player playing from his enemies
-                                lastScore: null, // score global for the player
-                                // -- helps to save the last score of the player playing.
-                                lastLives: null, // lives global for the player
-                                // also referred to as killings in the game.
-                                // -- helps to save the remaining lives of the player playing.
-                                shipList: {}, // global ship list
-                                // -- helps to keep the track of the players and the enemies 
-                                bombList: {}, // global bomb list
-                                // -- helps to keep track of the bombd fired. 
-                                lastTime: new Date().getTime()
-};
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
+    value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * @class Ocean
+ * @description Ocean class to add and update the ocean to the scene
+ * @author Satyam Saxena
+ */
 var Ocean = function () {
-	function Ocean(game) {
-		_classCallCheck(this, Ocean);
 
-		this.game = game;
-		this.parameters = {
-			oceanSide: 30000,
-			size: 1.0,
-			distortionScale: 3.7,
-			alpha: 1.0
-		};
-		this.object = new THREE.Water(this.parameters.oceanSide * 5, this.parameters.oceanSide * 5, {
-			textureWidth: 512,
-			textureHeight: 512,
-			waterNormals: new THREE.TextureLoader().load('textures/waternormals.jpg', function (texture) {
-				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-			}),
-			alpha: this.parameters.alpha,
-			sunDirection: this.game.mainDirectionalLight.position.clone().normalize(),
-			sunColor: 0xffffff,
-			waterColor: 0x001e0f,
-			distortionScale: this.parameters.distortionScale
-		});
-	}
+    /**
+     * 
+     * @param {*} game object of the game
+     */
+    function Ocean(game) {
+        _classCallCheck(this, Ocean);
 
-	_createClass(Ocean, [{
-		key: 'initiate',
-		value: function initiate() {
-			this.object.rotation.x = -Math.PI / 2;
-			this.object.receiveShadow = true;
+        this.game = game;
+        // default parameters for the ocean display
+        this.parameters = {
+            oceanSide: 30000,
+            size: 1.0,
+            distortionScale: 3.7,
+            alpha: 1.0
+        };
+        this.object = new THREE.Water(this.parameters.oceanSide * 5, this.parameters.oceanSide * 5, {
+            textureWidth: 512,
+            textureHeight: 512,
+            waterNormals: new THREE.TextureLoader().load('textures/waternormals.jpg', function (texture) {
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            }),
+            alpha: this.parameters.alpha,
+            sunDirection: this.game.mainDirectionalLight.position.clone().normalize(),
+            sunColor: 0xffffff,
+            waterColor: 0x001e0f,
+            distortionScale: this.parameters.distortionScale
+        });
+    }
 
-			this.game.scene.add(this.object);
-		}
-	}, {
-		key: 'update',
-		value: function update() {
-			this.object.material.uniforms.time.value += 1.0 / 60.0;
-			this.object.material.uniforms.size.value = this.parameters.size;
-			this.object.material.uniforms.distortionScale.value = this.parameters.distortionScale;
-			this.object.material.uniforms.alpha.value = this.parameters.alpha;
-		}
-	}]);
+    /**
+     * @description This method is used to initiate the ocean view in the scene
+     */
 
-	return Ocean;
+
+    _createClass(Ocean, [{
+        key: 'initiate',
+        value: function initiate() {
+
+            this.object.rotation.x = -Math.PI / 2;
+            this.object.receiveShadow = true;
+            this.game.scene.add(this.object);
+        }
+
+        /**
+         * @description This method is used to update the ocean, waves and distortion and lightning
+         */
+
+    }, {
+        key: 'update',
+        value: function update() {
+
+            this.object.material.uniforms.time.value += 1.0 / 60.0;
+            this.object.material.uniforms.size.value = this.parameters.size;
+            this.object.material.uniforms.distortionScale.value = this.parameters.distortionScale;
+            this.object.material.uniforms.alpha.value = this.parameters.alpha;
+        }
+    }]);
+
+    return Ocean;
 }();
 
 exports.default = Ocean;
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Player = function () {
-	function Player(id, name, lives, score, game, position, rotation) {
-		_classCallCheck(this, Player);
-
-		this.id = id;
-		this.name = name;
-		this.lives = lives;
-		this.score = score;
-		this.game = game;
-		this.object = new THREE.Object3D();
-		this.ship = new THREE.Object3D();
-		this.position = position;
-	}
-
-	_createClass(Player, [{
-		key: 'load',
-		value: function load() {
-			var _this = this;
-
-			var loader = new THREE.OBJMTLLoader(this.game.loadingManager);
-			loader.load('models/BlackPearl/BlackPearl.obj', 'models/BlackPearl/BlackPearl.mtl', function (object) {
-				object.position.y = 20.0;
-				if (object.children) {
-					for (var child in object.children) {
-						object.children[child].material.side = THREE.DoubleSide;
-					}
-				}
-				_this.ship.add(object);
-			});
-		}
-	}, {
-		key: 'initialize',
-		value: function initialize() {
-			//this.object.position.x = this.position.x || 0;
-			//this.object.position.y = this.position.y || 0;
-			//this.object.position.z = this.position.z || 0;
-
-			this.game.scene.add(this.object);
-			this.object.add(this.ship);
-			this.load();
-		}
-	}, {
-		key: 'initializeMe',
-		value: function initializeMe() {
-			this.initialize();
-			this.game.camera.position.set(0, 350, 800);
-			this.game.camera.lookAt(new THREE.Vector3());
-			this.ship.add(this.game.camera);
-		}
-	}, {
-		key: 'update',
-		value: function update(position, rotation, score, lives) {
-			//console.log(position);
-			this.object.position.x = position.x;
-			this.object.position.y = position.y;
-			this.object.position.z = position.z;
-			this.object.rotation.y += rotation;
-			this.lives = lives;
-			this.score = score;
-			/*
-   this.object.rotation.y += angle;
-         //this.ship.rotation.z = -angle * 10.0;
-         //this.ship.rotation.x = speed * 0.1;
-         var shipDisplacement = (new THREE.Vector3(0, 0, -1)).applyEuler(this.object.rotation).multiplyScalar( 10.0 * speed );
-   this.object.position.add( shipDisplacement );
-   this
-   */
-		}
-	}, {
-		key: 'remove',
-		value: function remove() {
-			this.game.scene.remove(this.object);
-		}
-	}]);
-
-	return Player;
-}();
-
-exports.default = Player;
-
-/***/ }),
-/* 6 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -763,33 +772,184 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+/**
+ * @class Player
+ * @description Class to add, remove and update the players of the game and adding controls to the playing player
+ * @author Satyam Saxena
+ */
+var Player = function () {
+    /**
+     *
+     * @param id id of the player
+     * @param name name of the player
+     * @param lives lives remaining of the player
+     * @param score current score of the player
+     * @param game object of the game
+     * @param position initial position of the player
+     */
+    function Player(id, name, lives, score, game, position) {
+        _classCallCheck(this, Player);
+
+        this.id = id;
+        this.name = name;
+        this.lives = lives;
+        this.score = score;
+        this.game = game;
+        this.object = new THREE.Object3D();
+        this.ship = new THREE.Object3D();
+        this.position = position;
+    }
+
+    /**
+     * @description this method loads the obj and mtl file of the player ship
+     */
+
+
+    _createClass(Player, [{
+        key: 'load',
+        value: function load() {
+            var _this = this;
+
+            var loader = new THREE.OBJMTLLoader(this.game.loadingManager);
+
+            loader.load('models/BlackPearl/BlackPearl.obj', 'models/BlackPearl/BlackPearl.mtl', function (object) {
+                object.position.y = 20.0;
+                if (object.children) {
+
+                    for (var child in object.children) {
+                        object.children[child].material.side = THREE.DoubleSide;
+                    }
+                }
+                _this.ship.add(object);
+            });
+        }
+
+        /**
+         * @description This method initialises the ship for all players and position them on the ocean.
+         */
+
+    }, {
+        key: 'initialize',
+        value: function initialize() {
+
+            //TODO: position all ships at accurate postion now only positioning at 000
+            //this.object.position.x = this.position.x || 0;
+            //this.object.position.y = this.position.y || 0;
+            //this.object.position.z = this.position.z || 0;
+
+            this.game.scene.add(this.object);
+            this.object.add(this.ship);
+            this.load();
+        }
+
+        /**
+         *@description This method initialises the controls for a player if the player is the user playing
+         */
+
+    }, {
+        key: 'initializeControls',
+        value: function initializeControls() {
+
+            this.game.camera.position.set(0, 350, 800);
+            this.game.camera.lookAt(new THREE.Vector3());
+            this.ship.add(this.game.camera);
+        }
+
+        /**
+         *
+         * @param {*} position new position of the ship from the server.
+         * @param {*} angle angle of the ship relative to the previous position
+         * @param {*} score updated score of the player
+         * @param {*} lives updated lives of the player
+         * @description this method updates the position of the player with vectos coming from the server
+         */
+
+    }, {
+        key: 'update',
+        value: function update(position, angle, score, lives) {
+
+            this.object.position.x = position.x;
+            this.object.position.y = position.y;
+            this.object.position.z = position.z;
+            this.object.rotation.y += angle;
+            this.lives = lives;
+            this.score = score;
+            //TODO: movement and toppling of ship withing the object
+            //this.ship.rotation.z = -angle * 10.0;
+            //this.ship.rotation.x = speed * 0.1;
+        }
+
+        /**
+         * @description this method removes the player from the screen on disconnect of game lost.
+         */
+
+    }, {
+        key: 'remove',
+        value: function remove() {
+            this.game.scene.remove(this.object);
+        }
+    }]);
+
+    return Player;
+}();
+
+exports.default = Player;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/**
+ * @class Bomb
+ * @description Class for creating, updating and removing the bombs in the game.
+ * @author Satyam Saxena
+ */
 var Bomb = function () {
+    /**
+     *
+     * @param id: id of the bomb
+     * @param game: object of the game
+     * @param position: initial position Vector of the bomb on the screen
+     */
     function Bomb(id, game, position) {
         _classCallCheck(this, Bomb);
 
         this.id = id;
         this.game = game;
-        //this.material = new THREE.MeshBasicMaterial({
-        // color: 0x000000
-        //});
-        //this.geometry = new THREE.SphereGeometry(1, 6, 10);
-        //this.object = new THREE.Mesh(this.geometry, this.material);
         this.position = position;
 
         this.geometry = new THREE.IcosahedronGeometry(20, 2);
         for (var i = 0, j = this.geometry.faces.length; i < j; i++) {
             this.geometry.faces[i].color.setHex(Math.random() * 0xffffff);
         }
+
         this.material = new THREE.MeshPhongMaterial({
             vertexColors: THREE.FaceColors,
             shininess: 10,
-            //envMap: cubeMap,
             side: THREE.DoubleSide
         });
+        // this is the mesh object of the bomb which is for adding the bomb to the scene and updating its position.
         this.object = new THREE.Mesh(this.geometry, this.material);
         this.object.castShadow = true;
-        //this.initialize(position);
     }
+
+    /**
+     *
+     * @description This method initialises the bomb on the screen.
+     *
+     */
+
 
     _createClass(Bomb, [{
         key: "initialize",
@@ -801,13 +961,29 @@ var Bomb = function () {
             this.object.position.z = this.position.z;
             this.game.scene.add(this.object);
         }
+
+        /**
+         *
+         * @description This method updates the postion of the bomb receiving the position from the server
+         * @param position: updated position vector of the bomb from server
+         *
+         */
+
     }, {
         key: "update",
         value: function update(position) {
+
             this.object.position.x = position.x;
             this.object.position.y = position.y;
             this.object.position.z = position.z;
         }
+
+        /**
+         *
+         * @description This method removes the bomb on the screen.
+         *
+         */
+
     }, {
         key: "remove",
         value: function remove() {
@@ -821,7 +997,7 @@ var Bomb = function () {
 exports.default = Bomb;
 
 /***/ }),
-/* 7 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

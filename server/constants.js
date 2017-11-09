@@ -11,7 +11,4 @@ export const EVENT_HAPPENED = 'EVENT_HAPPENED';
 export const COLOR_SELECTED = 'COLOR_SELECTED'; 
 export const GAME_LOST = 'GAME_LOST'; 
 
-
-
-
 export const DEBUG = (process.env.NODE_ENV==='development')?true:false;
