@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">	
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+        <title>Water Battle</title>
+        <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+    <div id="startPage" class="startPage" style="display:none;">
+        <div id="startForm" class="startForm">
+            <input class="input" type="text" id="playerName" placeholder="Enter Name to start" value="">
+            <button type="button" id="startGameButton">Start Game</button>
+        </div>
+    </div>
+    <div id="gameContainer"></div>
+    <div id="loaderDiv" style="display:none;">
+        Loading...
+    </div>
+    <script src="/js/libs/socket.js"></script>
+    <script src="/js/libs/three.js"></script>
+    <script src="/js/libs/OrbitControls.js"></script>
+    <script src="/js/libs/Water.js"></script>
+    <script src="/js/deps/MTLLoader.js"></script>
+    <script src="/js/deps/OBJMTLLoader.js"></script>
+    
+
+    <script src="/js/game-ui.js"></script>
+
+</body>
+
+</html>

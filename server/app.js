@@ -21,5 +21,6 @@ app.get('/',(req, res) => {
 
 server.listen(process.env.PORT || config.port, () => console.log('Listening on',config.port));
 console.log("Server started.", config.port);
+
 let io = new SocketIO(server,{});
 io.sockets.on('connection', connectSocket);

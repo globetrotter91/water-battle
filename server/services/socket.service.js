@@ -10,6 +10,7 @@ import {
     INITIALIZE,
     UPDATE, 
     REMOVE } from './../constants';
+import { SOCKET_PLAYER_MAP } from './../db';
     
 import Ship from './../models/Ship';
 import Bomb from './../models/Bomb';
@@ -21,18 +22,16 @@ export const connectSocket = (socket) => {
     var t = new Date().getTime().toString(); 
 	socket.id = createHash('md5').update(t).digest("hex");
 	SOCKET_LIST[socket.id] = socket;
-
     //handles when user enters name and presses enter
 	socket.on(ENTERGAME_REQUEST, (data) => { 
-        
-        Ship.onConnect(socket, data.playerId, data.playerName, data.color , new Vector(200, 100))
-        socket.emit(ENTERGAME_RESPONSE, true);
+        Ship.onConnect(socket, data.playerId, data.playerName, data.color , new Vector(0, 0, 0));
+        SOCKET_PLAYER_MAP[socket.id] = data.playerId;
+        socket.emit(ENTERGAME_RESPONSE, { selfId: data.playerId });
 	});
 	
 	socket.on('disconnect', () => {
         console.log('in disconnect, deleted player');
         delete SOCKET_LIST[socket.id];        
-        // delete player
         Ship.onDisconnect(socket);
 	});
 
@@ -62,7 +61,7 @@ export const connectSocket = (socket) => {
         removePack.ship = [];
         removePack.bomb = [];
         
-    },1000);
+    },1000/25);
 
 };
 

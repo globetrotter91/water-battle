@@ -1,18 +1,22 @@
 import Entity from './../lib/Entity';
+import Vector from './../lib/Vector';
 import { SHIP_LIST, BOMB_LIST, initPack, removePack } from './../db';
+import { createHash } from 'crypto';
 
 class Bomb extends Entity {
     constructor(position, angle, parent) {
-        super(parent.position);
+		super(position);
+		var t = new Date().getTime().toString(); 
+		this.id = createHash('md5').update(t).digest("hex");	 
         this.parent = parent;
-        this.velocity = parent.position.getVelocityFromAngle(angle);
+        this.velocity = this.position.getVelocityFromAngle(angle).multiply(10);
         this.timer = 0;
-        this.toRemove = false;
+		this.toRemove = false;	
     }
 
     update() {
         if(this.timer++ > 100)	this.toRemove = true;
-        this.position = this.position.add(velocity);
+        this.position = this.position.add(this.velocity);
     	for(var i in SHIP_LIST){  
 			var ship = SHIP_LIST[i];
 			if(this.getDistance(ship) < 10 && this.parent !== ship.id){
@@ -44,7 +48,7 @@ class Bomb extends Entity {
     
     initiate() {
         BOMB_LIST[this.id] = this;
-        initPack.bomb.push(self.getInitPack());
+        initPack.bomb.push(this.getInitPack());
     }
 }
 
@@ -54,8 +58,8 @@ Bomb.update = () => {
 		var bomb = BOMB_LIST[i];
 		bomb.update();
 		if(bomb.toRemove){
-			delete BOMB_LIST[i];
 			removePack.bomb.push(bomb.id);
+			delete BOMB_LIST[i];			
 		} else {
 			pack.push(bomb.getUpdatePack());		
 		}

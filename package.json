@@ -14,7 +14,8 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.15.4",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.3",
+    "three": "^0.88.0"
   },
   "scripts": {
     "start": "nodemon --watch server --exec babel-node -- server/app.js",
