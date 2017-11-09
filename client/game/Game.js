@@ -289,6 +289,7 @@ class Game {
      * @description This function handles the game start event
      */
     handleGameStarted( data ) {
+        console.log
         this.selfId = data.selfId;
     }
 
@@ -298,24 +299,30 @@ class Game {
      * @description This function handles the initialise event from the server
      */
     handleInitialized( data ) {
+        
+        if(this.selfId) {
+            data.ship.forEach( ( ship, idx ) => {
+                if( !this.playerList[ ship.id ] ) {
+                    //delete this.playerList[ ship.id ];
+                    var player = new Player( ship.id, ship.name, ship.lives, ship.score, this, ship.position );
+                    player.initialize();
+                    if ( ship.id === this.selfId ) {
+                        player.initializeControls();
+                    }
+        
+                    this.playerList[ ship.id ] = player;
+                }
+                
+            } );
 
-        data.ship.forEach( ( ship, idx ) => {
-            var player = new Player( ship.id, ship.name, ship.lives, ship.score, this, ship.position );
-            player.initialize();
-            if ( ship.id === this.selfId ) {
-                player.initializeControls();
-            }
-
-            this.playerList[ ship.id ] = player;
-        } );
-
-        data.bomb.forEach( ( bomb, idx ) => {
-            if ( !this.bombList[ bomb.id ] ) {
-                var bomb = new Bomb( bomb.id, this, bomb.position );
-                bomb.initialize();
-                this.bombList[ bomb.id ] = bomb;
-            }
-        } );
+            data.bomb.forEach( ( bomb, idx ) => {
+                if ( !this.bombList[ bomb.id ] ) {
+                    var bomb = new Bomb( bomb.id, this, bomb.position );
+                    bomb.initialize();
+                    this.bombList[ bomb.id ] = bomb;
+                }
+            } );
+        }
 
     }
 

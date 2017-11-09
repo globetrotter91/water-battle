@@ -177,8 +177,13 @@ Ship.onConnect = ( socket , playerId, name, color, position ) => {
             ship.pressingAttack = data.state;
 		else if(data.inputId === 'mouseAngle')
 			ship.mouseAngle = data.state;
-    });
-    
+    } );
+
+    socket.emit( INITIALIZE, {
+		ship: Ship.getAllInitPack(),
+		bomb: Bomb.getAllInitPack(),
+	} );
+   
 }
 
 /**

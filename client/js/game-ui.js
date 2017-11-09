@@ -522,6 +522,7 @@ var Game = function () {
     }, {
         key: 'handleGameStarted',
         value: function handleGameStarted(data) {
+            console.log;
             this.selfId = data.selfId;
         }
 
@@ -536,23 +537,28 @@ var Game = function () {
         value: function handleInitialized(data) {
             var _this2 = this;
 
-            data.ship.forEach(function (ship, idx) {
-                var player = new _Player2.default(ship.id, ship.name, ship.lives, ship.score, _this2, ship.position);
-                player.initialize();
-                if (ship.id === _this2.selfId) {
-                    player.initializeControls();
-                }
+            if (this.selfId) {
+                data.ship.forEach(function (ship, idx) {
+                    if (!_this2.playerList[ship.id]) {
+                        //delete this.playerList[ ship.id ];
+                        var player = new _Player2.default(ship.id, ship.name, ship.lives, ship.score, _this2, ship.position);
+                        player.initialize();
+                        if (ship.id === _this2.selfId) {
+                            player.initializeControls();
+                        }
 
-                _this2.playerList[ship.id] = player;
-            });
+                        _this2.playerList[ship.id] = player;
+                    }
+                });
 
-            data.bomb.forEach(function (bomb, idx) {
-                if (!_this2.bombList[bomb.id]) {
-                    var bomb = new _Bomb2.default(bomb.id, _this2, bomb.position);
-                    bomb.initialize();
-                    _this2.bombList[bomb.id] = bomb;
-                }
-            });
+                data.bomb.forEach(function (bomb, idx) {
+                    if (!_this2.bombList[bomb.id]) {
+                        var bomb = new _Bomb2.default(bomb.id, _this2, bomb.position);
+                        bomb.initialize();
+                        _this2.bombList[bomb.id] = bomb;
+                    }
+                });
+            }
         }
 
         /**

@@ -30,10 +30,10 @@ export const connectSocket = ( socket ) => {
     
     //handles when user enters name and presses enter
 	socket.on( ENTERGAME_REQUEST, ( data ) => { 
-    
+
+        socket.emit(ENTERGAME_RESPONSE, { selfId: data.playerId });
         Ship.onConnect(socket, data.playerId, data.playerName, data.color , new Vector(0, 0, 0));
         SOCKET_PLAYER_MAP[socket.id] = data.playerId;
-        socket.emit(ENTERGAME_RESPONSE, { selfId: data.playerId });
     
     });
 	
@@ -61,12 +61,16 @@ export const connectSocket = ( socket ) => {
             ship: removePack.ship,
             bomb: removePack.bomb,
         }
-        for(var i in SOCKET_LIST){
-            var socket = SOCKET_LIST[i];
-            socket.emit(INITIALIZE, initializerPack);
-            socket.emit(UPDATE, updaterPack);
-            socket.emit(REMOVE, removerPack);
-        }
+        
+            for(var i in SOCKET_LIST){
+                var socket = SOCKET_LIST[i];
+                if(SOCKET_PLAYER_MAP[socket.id]) {
+                    socket.emit(INITIALIZE, initializerPack);
+                    socket.emit(UPDATE, updaterPack);
+                    socket.emit(REMOVE, removerPack);
+                }
+            }
+        
 
         initPack.ship = [];
         initPack.bomb = [];
