@@ -9,14 +9,26 @@ class Bomb extends Entity {
 		var t = new Date().getTime().toString(); 
 		this.id = createHash('md5').update(t).digest("hex");	 
         this.parent = parent;
-        this.velocity = this.position.getVelocityFromAngle(angle).multiply(10);
+        this.velocity = this.position.getVelocityFromAngle(angle).multiply(30);
         this.timer = 0;
 		this.toRemove = false;	
     }
 
     update() {
-        if(this.timer++ > 100)	this.toRemove = true;
-        this.position = this.position.add(this.velocity);
+		this.timer++;
+		this.position = this.position.add(this.velocity);
+		
+		if(this.timer<100) {
+			this.position.y+=5;
+		}
+		else if(this.timer > 100 && this.timer <= 200) {
+			this.position.y-=5;
+		}
+		else if(this.timer > 200) {
+			this.toRemove = true;
+		}
+
+		
     	for(var i in SHIP_LIST){  
 			var ship = SHIP_LIST[i];
 			if(this.getDistance(ship) < 10 && this.parent !== ship.id){
