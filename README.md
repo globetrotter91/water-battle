@@ -30,7 +30,7 @@ Multiplayer game using THREE.js, NodeJS and sockets. ES6 syntax.
 
 # ToDO
 
-1. Add shooting physics for projectile motion. Minor fixes like initial positiom setting of the player.
+1. Add shooting physics for projectile motion. Minor fixes like initial positiom setting of the player. --complete
 
 2. Shaky movemnt to the ship. Ship should visually be damaged when hit.
 
