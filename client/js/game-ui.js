@@ -74,32 +74,12 @@ var _Window = __webpack_require__(1);
 
 var _Window2 = _interopRequireDefault(_Window);
 
-var _Game = __webpack_require__(2);
-
-var _Game2 = _interopRequireDefault(_Game);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// TODO: clean this file
-
-
-// creating object of the window class
+// create a window object
 var windowObj = new _Window2.default(0, 0);
-// initialise window object
+// initialise the window object
 windowObj.initialize();
-// create the game instance with width and height from window.
-var game = new _Game2.default(windowObj.width, windowObj.height);
-// initialise the game
-game.initialize();
-game.resize(windowObj.width, windowObj.height);
-
-// render function is used to request frames at 60FPS and update the game.
-var render = function render() {
-    requestAnimationFrame(render);
-    game.update();
-};
-
-render();
 
 /***/ }),
 /* 1 */
@@ -114,6 +94,12 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _Game = __webpack_require__(2);
+
+var _Game2 = _interopRequireDefault(_Game);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -126,14 +112,12 @@ var Window = function () {
      * 
      * @param {*} height the height of the window
      * @param {*} width the width of the window
-     * @param {*} game the object of the game
      */
-    function Window(height, width, game) {
+    function Window(height, width) {
         _classCallCheck(this, Window);
 
         this.height = height;
         this.width = width;
-        this.game = game;
     }
     /**
      * @description this method initializes the game height and width and adds resize handler
@@ -141,13 +125,31 @@ var Window = function () {
 
 
     _createClass(Window, [{
-        key: "initialize",
+        key: 'initialize',
         value: function initialize() {
+            var _this = this;
 
             this.updateSize();
             window.onresize = function (inEvent) {
-                this.handleWindowResize();
+                _this.updateSize();
+                _this.handleWindowResize();
             };
+            this.game = new _Game2.default(this.width, this.height);
+            this.game.initialize();
+            this.game.resize(this.width, this.height);
+            this.renderGame();
+        }
+
+        /**
+         * @description  This method is used to request frames at 60FPS and update the game.
+         */
+
+    }, {
+        key: 'renderGame',
+        value: function renderGame() {
+
+            requestAnimationFrame(this.renderGame.bind(this));
+            this.game.update();
         }
 
         /**
@@ -155,7 +157,7 @@ var Window = function () {
          */
 
     }, {
-        key: "updateSize",
+        key: 'updateSize',
         value: function updateSize() {
 
             this.width = window.innerWidth;
@@ -167,10 +169,9 @@ var Window = function () {
          */
 
     }, {
-        key: "handleWindowResize",
-        value: function handleWindowResize(inWidth, inHeight) {
-            //TODO: resize handler foe the game
-            //this.game.resize( inWidth, inHeight );
+        key: 'handleWindowResize',
+        value: function handleWindowResize() {
+            this.game.resize(this.width, this.height);
         }
     }]);
 

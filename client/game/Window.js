@@ -1,3 +1,4 @@
+import Game from './Game';
 /**
  * @class Window
  * @description Class for handling window events and setting defaults for the game
@@ -8,13 +9,11 @@ export default class Window {
      * 
      * @param {*} height the height of the window
      * @param {*} width the width of the window
-     * @param {*} game the object of the game
      */
-    constructor( height, width, game ) {
+    constructor( height, width ) {
 
         this.height = height;
         this.width = width;
-        this.game = game;
 
     }
     /**
@@ -23,10 +22,24 @@ export default class Window {
     initialize() {
 
         this.updateSize();
-        window.onresize = function ( inEvent ) {
+        window.onresize = ( inEvent ) => {
+            this.updateSize();
             this.handleWindowResize();
         };
+        this.game = new Game(this.width, this.height);
+        this.game.initialize();
+        this.game.resize(this.width, this.height);
+        this.renderGame()
+    }
 
+    /**
+     * @description  This method is used to request frames at 60FPS and update the game.
+     */
+    renderGame() {
+
+        requestAnimationFrame( this.renderGame.bind(this) );
+        this.game.update();
+        
     }
 
     /**
@@ -42,9 +55,8 @@ export default class Window {
     /**
      * @description this method handles the window resize
      */
-    handleWindowResize( inWidth, inHeight ) {
-        //TODO: resize handler foe the game
-        //this.game.resize( inWidth, inHeight );
+    handleWindowResize() {
+        this.game.resize( this.width, this.height );
     }
 
 }
