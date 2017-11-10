@@ -1,8 +1,8 @@
 export const URL = "http://localhost:8000";
 export const API_URL = "http://localhost:8000/api";
 export const START_PAGE = document.getElementById('startPage');
-export const GAME_CONTAINER = document.getElementById('gameContainer');
-
+export const START_BUTTON = document.getElementById('startGameButton');
+export const PLAYER_NAME = document.getElementById('playerName');
 //socket events 
 export const ENTERGAME_REQUEST = 'ENTERGAME_REQUEST';
 export const ENTERGAME_RESPONSE = 'ENTERGAME_RESPONSE';

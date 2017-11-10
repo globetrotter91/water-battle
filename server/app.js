@@ -19,8 +19,6 @@ app.get('/',(req, res) => {
     res.sendFile(path.join(__dirname, './../client/index.html'));
 })
 
-//console.log(Math.sin(Math.PI/6))
-
 server.listen(process.env.PORT || config.port, () => console.log('Listening on',config.port));
 
 let io = new SocketIO(server,{});

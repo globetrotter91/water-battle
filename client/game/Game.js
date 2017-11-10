@@ -1,7 +1,14 @@
 import Ocean from './Ocean';
 import Player from './Player';
 import Bomb from './Bomb';
-import { ENTERGAME_REQUEST, ENTERGAME_RESPONSE, API_URL, INITIALIZE, UPDATE, REMOVE, GAME_LOST, EVENT_HAPPENED } from './constants';
+import {
+    ENTERGAME_REQUEST,
+    ENTERGAME_RESPONSE,
+    API_URL,
+    INITIALIZE, UPDATE, REMOVE, GAME_LOST, EVENT_HAPPENED, 
+    START_PAGE,
+    PLAYER_NAME 
+} from './constants';
 /**
  * @class Game 
  * @description Main class for the game. Contains initialization server communication functions
@@ -58,9 +65,14 @@ class Game {
         this.initializeCommands();
         this.initializeScene();
 
-        //TODO: Make this dyamic. Take user input for name
-        this.serverRequest( 'saty', 'ff00ff' );
+    }
 
+    /**
+     * This method is used to start the game with respect to the player. 
+     * When the player enters the name and clicks start button
+     */
+    handleGameStartButtonClicked() {
+        this.serverRequest(PLAYER_NAME.value, 'ffffff');
     }
 
     /**
@@ -413,7 +425,7 @@ class Game {
         var that = this;
         xhttp.onreadystatechange = function () {
             if ( this.readyState == 4 && this.status == 200 ) {
-
+                START_PAGE.style.display = 'none';
                 var resJson = JSON.parse( this.responseText );
                 that.socket.emit( ENTERGAME_REQUEST, { playerId: resJson.id, playerName: resJson.name, color: resJson.color } );
             }

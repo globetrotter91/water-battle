@@ -1,4 +1,6 @@
 import Game from './Game';
+import { START_BUTTON } from './constants';
+
 /**
  * @class Window
  * @description Class for handling window events and setting defaults for the game
@@ -29,7 +31,12 @@ export default class Window {
         this.game = new Game(this.width, this.height);
         this.game.initialize();
         this.game.resize(this.width, this.height);
-        this.renderGame()
+        this.renderGame();
+
+        START_BUTTON.addEventListener( 'click' ,  (ev) => {
+            this.game.handleGameStartButtonClicked();
+        })
+
     }
 
     /**

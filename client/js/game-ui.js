@@ -98,6 +98,8 @@ var _Game = __webpack_require__(2);
 
 var _Game2 = _interopRequireDefault(_Game);
 
+var _constants = __webpack_require__(6);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -138,6 +140,10 @@ var Window = function () {
             this.game.initialize();
             this.game.resize(this.width, this.height);
             this.renderGame();
+
+            _constants.START_BUTTON.addEventListener('click', function (ev) {
+                _this.game.handleGameStartButtonClicked();
+            });
         }
 
         /**
@@ -270,9 +276,17 @@ var Game = function () {
             this.initializeLoader();
             this.initializeCommands();
             this.initializeScene();
+        }
 
-            //TODO: Make this dyamic. Take user input for name
-            this.serverRequest('saty', 'ff00ff');
+        /**
+         * This method is used to start the game with respect to the player. 
+         * When the player enters the name and clicks start button
+         */
+
+    }, {
+        key: 'handleGameStartButtonClicked',
+        value: function handleGameStartButtonClicked() {
+            this.serverRequest(_constants.PLAYER_NAME.value, 'ffffff');
         }
 
         /**
@@ -664,7 +678,7 @@ var Game = function () {
             var that = this;
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-
+                    _constants.START_PAGE.style.display = 'none';
                     var resJson = JSON.parse(this.responseText);
                     that.socket.emit(_constants.ENTERGAME_REQUEST, { playerId: resJson.id, playerName: resJson.name, color: resJson.color });
                 }
@@ -1016,8 +1030,8 @@ Object.defineProperty(exports, "__esModule", {
 var URL = exports.URL = "http://localhost:8000";
 var API_URL = exports.API_URL = "http://localhost:8000/api";
 var START_PAGE = exports.START_PAGE = document.getElementById('startPage');
-var GAME_CONTAINER = exports.GAME_CONTAINER = document.getElementById('gameContainer');
-
+var START_BUTTON = exports.START_BUTTON = document.getElementById('startGameButton');
+var PLAYER_NAME = exports.PLAYER_NAME = document.getElementById('playerName');
 //socket events 
 var ENTERGAME_REQUEST = exports.ENTERGAME_REQUEST = 'ENTERGAME_REQUEST';
 var ENTERGAME_RESPONSE = exports.ENTERGAME_RESPONSE = 'ENTERGAME_RESPONSE';

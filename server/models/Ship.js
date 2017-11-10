@@ -44,7 +44,7 @@ class Ship extends Entity {
      * @description called when game is lost
      */
     gameLost() {
-        console.log('game lost');
+        
 		var socket = SOCKET_LIST[ this.socketId ];
 		socket.emit( GAME_LOST, { score: this.score } );
 		delete SHIP_LIST[ this.id ];
@@ -93,10 +93,9 @@ class Ship extends Entity {
         
         this.updateWithCommands();
         this.rotation.y += this.angle;
-        var shipDisplacement = (new Vector3(0, 0, -1)).applyEuler( this.rotation ).multiplyScalar( 10.0 * this.speed );
+        var shipDisplacement = (new Vector3(0, 0, -0.75)).applyEuler( this.rotation ).multiplyScalar( 10.0 * this.speed );
         this.position.add( shipDisplacement );
         if(this.pressingAttack) {
-            //console.log(this.angle/0.005);
             this.throwBomb();
         }
 
@@ -107,13 +106,8 @@ class Ship extends Entity {
      */
     throwBomb() {
 
-        let position = new Vector(this.position.X, this.position.Y, this.position.Z); //this.position;
-        let id = this.id;
-        var angle = Math.PI / 2;
-        
-        //angle = this.angle + Math.PI/2; // this.angle / 0.005;
-        //console.log(this.angle/0.005, this.rotation);
-        let bomb = new Bomb(position, angle , id, this.rotation);
+        let position = new Vector(this.position.X, this.position.Y, this.position.Z);
+        let bomb = new Bomb(position, this.id, this.rotation);
         bomb.initiate(); 
 
     }

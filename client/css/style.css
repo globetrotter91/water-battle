@@ -6,10 +6,11 @@ body {
 .startPage {
     width: 100%;
     height: 100%;
-    background: #999;
+    background-color: rgba(0,0,0, 0.6);
     position: fixed;
     z-index: 3;
 }
+
 #loaderDiv {
     width: 100%;
     height: 100%;
@@ -20,24 +21,27 @@ body {
     color: #FFF;
     display: none;
 }
+
 .startForm {
     position: absolute;
     width: 100%;
-    height: 30%;
+    height: 50%;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     margin: auto;
     text-align: center;
+    color: #FFF;
 }
 
 .startForm .input {
     color: blue;
     border: 2px solid yellow;
-    padding: 20px;
+    padding: 15px 20px;
     font-size: 20px;
     border-radius: 50px;
+    margin-right: 10px;
 }
 
 .startForm button {
@@ -54,8 +58,9 @@ body {
     -ms-user-select: none;
     user-select: none;
     white-space: nowrap;
-    padding: 8px 12px;
+    padding: 12px 12px;
     line-height: 1.4;    
+    margin-top: -10px;
     color: blue; 
 }
 
