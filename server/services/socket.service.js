@@ -32,7 +32,8 @@ export const connectSocket = ( socket ) => {
 	socket.on( ENTERGAME_REQUEST, ( data ) => { 
 
         socket.emit(ENTERGAME_RESPONSE, { selfId: data.playerId });
-        Ship.onConnect(socket, data.playerId, data.playerName, data.color , new Vector(0, 0, 0));
+
+        Ship.onConnect(socket, data.playerId, data.playerName, data.color , new Vector((Math.random()*10000+1), 0, (Math.random()*10000+1)));
         SOCKET_PLAYER_MAP[socket.id] = data.playerId;
     
     });

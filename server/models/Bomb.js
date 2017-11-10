@@ -52,14 +52,14 @@ class Bomb extends Entity {
 		
     	for(var i in SHIP_LIST){  
 			var ship = SHIP_LIST[i];
-			if(this.getDistance(ship) < 10 && this.parent !== ship.id){
-                ship.lives -= 1;	
+			if(this.getDistance(ship) < 120 && this.parent !== ship.id){
+				ship.lives -= 1;	
                 var shooter = SHIP_LIST[this.parent];
                 shooter.score+= 1;
                 // update db if necessary
                 if(ship.lives == 0) {
                     ship.gameLost();
-                }
+            	}
 				this.toRemove = true;
 			}
 		}

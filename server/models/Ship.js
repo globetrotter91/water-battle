@@ -44,7 +44,7 @@ class Ship extends Entity {
      * @description called when game is lost
      */
     gameLost() {
-
+        console.log('game lost');
 		var socket = SOCKET_LIST[ this.socketId ];
 		socket.emit( GAME_LOST, { score: this.score } );
 		delete SHIP_LIST[ this.id ];
