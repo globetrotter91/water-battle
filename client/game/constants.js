@@ -1,5 +1,5 @@
-export const URL = "http://localhost:8000";
-export const API_URL = "http://localhost:8000/api";
+export const URL = `${window.location.protocol}//${window.location.host}`;
+export const API_URL = `${window.location.protocol}//${window.location.host}/api`;
 export const START_PAGE = document.getElementById('startPage');
 export const START_BUTTON = document.getElementById('startGameButton');
 export const PLAYER_NAME = document.getElementById('playerName');

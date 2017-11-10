@@ -1048,8 +1048,8 @@ exports.default = Bomb;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var URL = exports.URL = "http://localhost:8000";
-var API_URL = exports.API_URL = "http://localhost:8000/api";
+var URL = exports.URL = window.location.protocol + '//' + window.location.host;
+var API_URL = exports.API_URL = window.location.protocol + '//' + window.location.host + '/api';
 var START_PAGE = exports.START_PAGE = document.getElementById('startPage');
 var START_BUTTON = exports.START_BUTTON = document.getElementById('startGameButton');
 var PLAYER_NAME = exports.PLAYER_NAME = document.getElementById('playerName');
