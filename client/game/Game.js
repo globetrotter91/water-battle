@@ -303,7 +303,7 @@ class Game {
         if(this.selfId) {
             data.ship.forEach( ( ship, idx ) => {
                 if( !this.playerList[ ship.id ] ) {
-                    //delete this.playerList[ ship.id ];
+                    
                     var player = new Player( ship.id, ship.name, ship.lives, ship.score, this, ship.position );
                     player.initialize();
                     if ( ship.id === this.selfId ) {
@@ -335,7 +335,7 @@ class Game {
 
         data.ship.forEach( ( ship, idx ) => {
             if ( this.playerList[ ship.id ] ) {
-                this.playerList[ ship.id ].update( ship.position, ship.angle, ship.score, ship.lives );
+                this.playerList[ ship.id ].update( ship.position, ship.angle, ship.score, ship.lives, ship.speed );
             }
         } );
 

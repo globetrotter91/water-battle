@@ -96,6 +96,7 @@ class Ship extends Entity {
         var shipDisplacement = (new Vector3(0, 0, -1)).applyEuler( this.rotation ).multiplyScalar( 10.0 * this.speed );
         this.position.add( shipDisplacement );
         if(this.pressingAttack) {
+            //console.log(this.angle/0.005);
             this.throwBomb();
         }
 
@@ -108,7 +109,11 @@ class Ship extends Entity {
 
         let position = new Vector(this.position.X, this.position.Y, this.position.Z); //this.position;
         let id = this.id;
-        let bomb = new Bomb(position, this.angle , id);
+        var angle = Math.PI / 2;
+        
+        //angle = this.angle + Math.PI/2; // this.angle / 0.005;
+        //console.log(this.angle/0.005, this.rotation);
+        let bomb = new Bomb(position, angle , id, this.rotation);
         bomb.initiate(); 
 
     }
@@ -139,7 +144,8 @@ class Ship extends Entity {
             position: this.position,
 			score:this.score,
             lives: this.lives, 
-            angle: this.angle
+            angle: this.angle,
+            speed: this.speed
         }	
 
 	}

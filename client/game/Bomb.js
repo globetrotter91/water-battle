@@ -29,7 +29,7 @@ class Bomb {
         // this is the mesh object of the bomb which is for adding the bomb to the scene and updating its position.
         this.object = new THREE.Mesh( this.geometry, this.material );
         this.object.castShadow = true;
-
+        
     }
 
     /**
@@ -39,7 +39,6 @@ class Bomb {
      */
     initialize() {
 
-        console.log( this.object );
         this.object.position.x = this.position.x;
         this.object.position.y = this.position.y;
         this.object.position.z = this.position.z;

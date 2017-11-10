@@ -540,7 +540,7 @@ var Game = function () {
             if (this.selfId) {
                 data.ship.forEach(function (ship, idx) {
                     if (!_this2.playerList[ship.id]) {
-                        //delete this.playerList[ ship.id ];
+
                         var player = new _Player2.default(ship.id, ship.name, ship.lives, ship.score, _this2, ship.position);
                         player.initialize();
                         if (ship.id === _this2.selfId) {
@@ -574,7 +574,7 @@ var Game = function () {
 
             data.ship.forEach(function (ship, idx) {
                 if (_this3.playerList[ship.id]) {
-                    _this3.playerList[ship.id].update(ship.position, ship.angle, ship.score, ship.lives);
+                    _this3.playerList[ship.id].update(ship.position, ship.angle, ship.score, ship.lives, ship.speed);
                 }
             });
 
@@ -867,12 +867,13 @@ var Player = function () {
          * @param {*} angle angle of the ship relative to the previous position
          * @param {*} score updated score of the player
          * @param {*} lives updated lives of the player
+         * @param {*} speed updated speed of the player
          * @description this method updates the position of the player with vectos coming from the server
          */
 
     }, {
         key: 'update',
-        value: function update(position, angle, score, lives) {
+        value: function update(position, angle, score, lives, speed) {
 
             this.object.position.x = position.x;
             this.object.position.y = position.y;
@@ -881,8 +882,8 @@ var Player = function () {
             this.lives = lives;
             this.score = score;
             //TODO: movement and toppling of ship withing the object
-            //this.ship.rotation.z = -angle * 10.0;
-            //this.ship.rotation.x = speed * 0.1;
+            this.ship.rotation.z = -angle * 10.0;
+            this.ship.rotation.x = speed * 0.1;
         }
 
         /**
@@ -961,7 +962,6 @@ var Bomb = function () {
         key: "initialize",
         value: function initialize() {
 
-            console.log(this.object);
             this.object.position.x = this.position.x;
             this.object.position.y = this.position.y;
             this.object.position.z = this.position.z;
