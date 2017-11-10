@@ -25,9 +25,18 @@
             <h2>So good luck shooting!</h2>
         </div>
     </div>
-    <div id="gameContainer"></div>
-    <div id="loaderDiv" style="display:none;">
-        Loading...
+    <div class="info-bar" id="infoBar">
+        <div class="lives"> Lives: <span id="lifeCounter"></span></div>
+        <div class="username" id="username"></div>
+        <div class="score"> Score: <span id="scoreCounter"></span></div>
+    </div>
+    <div class="game-lost" id="gameLosDiv">
+        <div class="game-lost-content">
+                <h1> YOU LOST </h1>
+                <h2> NO BODY SAID IT WAS EASY! </h2>
+                <h1> Your final score is <span id="finalScore"></span></h1>
+                <h2> Better Luck Next Time.</h2>
+        </div>        
     </div>
     <script src="/js/libs/socket.js"></script>
     <script src="/js/libs/three.js"></script>

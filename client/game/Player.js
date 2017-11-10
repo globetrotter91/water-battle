@@ -1,3 +1,5 @@
+import { PLAYER_LIVES_SPAN, PLAYER_NAME_SPAN, PLAYER_SCORE_SPAN } from "./constants";
+
 /**
  * @class Player
  * @description Class to add, remove and update the players of the game and adding controls to the playing player
@@ -52,10 +54,9 @@ class Player {
      */
     initialize() {
         
-        //TODO: position all ships at accurate postion now only positioning at 000
-        //this.object.position.x = this.position.x || 0;
-        //this.object.position.y = this.position.y || 0;
-        //this.object.position.z = this.position.z || 0;
+        this.object.position.x = this.position.x || 0;
+        this.object.position.y = this.position.y || 0;
+        this.object.position.z = this.position.z || 0;
 
         this.game.scene.add( this.object );
         this.object.add( this.ship );
@@ -71,6 +72,7 @@ class Player {
         this.game.camera.position.set( 0, 350, 800 );
         this.game.camera.lookAt( new THREE.Vector3() );
         this.ship.add( this.game.camera );
+        PLAYER_NAME_SPAN.innerHTML = this.name;
 
     }
 
@@ -83,17 +85,29 @@ class Player {
      * @param {*} speed updated speed of the player
      * @description this method updates the position of the player with vectos coming from the server
      */
-    update( position, angle, score, lives, speed ) {
+    update( position, angle, speed ) {
 
         this.object.position.x = position.x;
         this.object.position.y = position.y;
         this.object.position.z = position.z;
         this.object.rotation.y += angle;
-        this.lives = lives;
-        this.score = score;
-        //TODO: movement and toppling of ship withing the object
         this.ship.rotation.z = -angle * 10.0;
         this.ship.rotation.x = speed * 0.1;
+
+    }
+
+    /**
+     * 
+     * @param {*} score updated score of the player
+     * @param {*} lives updated lives of the player
+     * @description This method updates the HTML content for the score and lives of the player currently playing.
+     */
+    updateScoreAndLives( score, lives ) {
+        
+        this.score = score;
+        this.lives = lives;
+        PLAYER_LIVES_SPAN.innerHTML = this.lives;
+        PLAYER_SCORE_SPAN.innerHTML = this.score;
 
     }
 

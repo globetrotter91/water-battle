@@ -513,7 +513,7 @@ var Game = function () {
         }
 
         /**
-         * //@TODO
+         * 
          * @param {*} inWidth  width to resize to
          * @param {*} inHeight height to resize to
          */
@@ -521,7 +521,7 @@ var Game = function () {
     }, {
         key: 'resize',
         value: function resize(inWidth, inHeight) {
-            // TODO: implement the function // currently not working
+
             this.camera.aspect = inWidth / inHeight;
             this.camera.updateProjectionMatrix();
             this.renderer.setSize(inWidth, inHeight);
@@ -537,7 +537,6 @@ var Game = function () {
     }, {
         key: 'handleGameStarted',
         value: function handleGameStarted(data) {
-            console.log;
             this.selfId = data.selfId;
         }
 
@@ -589,7 +588,10 @@ var Game = function () {
 
             data.ship.forEach(function (ship, idx) {
                 if (_this3.playerList[ship.id]) {
-                    _this3.playerList[ship.id].update(ship.position, ship.angle, ship.score, ship.lives, ship.speed);
+                    _this3.playerList[ship.id].update(ship.position, ship.angle, ship.speed);
+                    if (ship.id === _this3.selfId) {
+                        _this3.playerList[ship.id].updateScoreAndLives(ship.score, ship.lives);
+                    }
                 }
             });
 
@@ -627,7 +629,7 @@ var Game = function () {
         }
 
         /**
-         * //TODO
+         * 
          * @param {*} data data from the server
          * @description This function handles the game over event from the server
          */
@@ -635,8 +637,9 @@ var Game = function () {
     }, {
         key: 'handleGameEnded',
         value: function handleGameEnded(data) {
-            console.log('game over bitch', data);
-            //TODO : implement game over logic and UI
+
+            _constants.GAME_LOST_DIV.style.display = 'block';
+            _constants.FINAL_SCORE_SPAN.innerHTML = data.score;
         }
 
         /**
@@ -678,7 +681,9 @@ var Game = function () {
             var that = this;
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
+
                     _constants.START_PAGE.style.display = 'none';
+                    _constants.INFO_BAR.style.display = 'block';
                     var resJson = JSON.parse(this.responseText);
                     that.socket.emit(_constants.ENTERGAME_REQUEST, { playerId: resJson.id, playerName: resJson.name, color: resJson.color });
                 }
@@ -791,6 +796,8 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _constants = __webpack_require__(6);
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -853,10 +860,9 @@ var Player = function () {
         key: 'initialize',
         value: function initialize() {
 
-            //TODO: position all ships at accurate postion now only positioning at 000
-            //this.object.position.x = this.position.x || 0;
-            //this.object.position.y = this.position.y || 0;
-            //this.object.position.z = this.position.z || 0;
+            this.object.position.x = this.position.x || 0;
+            this.object.position.y = this.position.y || 0;
+            this.object.position.z = this.position.z || 0;
 
             this.game.scene.add(this.object);
             this.object.add(this.ship);
@@ -874,6 +880,7 @@ var Player = function () {
             this.game.camera.position.set(0, 350, 800);
             this.game.camera.lookAt(new THREE.Vector3());
             this.ship.add(this.game.camera);
+            _constants.PLAYER_NAME_SPAN.innerHTML = this.name;
         }
 
         /**
@@ -888,17 +895,31 @@ var Player = function () {
 
     }, {
         key: 'update',
-        value: function update(position, angle, score, lives, speed) {
+        value: function update(position, angle, speed) {
 
             this.object.position.x = position.x;
             this.object.position.y = position.y;
             this.object.position.z = position.z;
             this.object.rotation.y += angle;
-            this.lives = lives;
-            this.score = score;
-            //TODO: movement and toppling of ship withing the object
             this.ship.rotation.z = -angle * 10.0;
             this.ship.rotation.x = speed * 0.1;
+        }
+
+        /**
+         * 
+         * @param {*} score updated score of the player
+         * @param {*} lives updated lives of the player
+         * @description This method updates the HTML content for the score and lives of the player currently playing.
+         */
+
+    }, {
+        key: 'updateScoreAndLives',
+        value: function updateScoreAndLives(score, lives) {
+
+            this.score = score;
+            this.lives = lives;
+            _constants.PLAYER_LIVES_SPAN.innerHTML = this.lives;
+            _constants.PLAYER_SCORE_SPAN.innerHTML = this.score;
         }
 
         /**
@@ -1032,6 +1053,13 @@ var API_URL = exports.API_URL = "http://localhost:8000/api";
 var START_PAGE = exports.START_PAGE = document.getElementById('startPage');
 var START_BUTTON = exports.START_BUTTON = document.getElementById('startGameButton');
 var PLAYER_NAME = exports.PLAYER_NAME = document.getElementById('playerName');
+var PLAYER_NAME_SPAN = exports.PLAYER_NAME_SPAN = document.getElementById('username');
+var PLAYER_LIVES_SPAN = exports.PLAYER_LIVES_SPAN = document.getElementById('lifeCounter');
+var PLAYER_SCORE_SPAN = exports.PLAYER_SCORE_SPAN = document.getElementById('scoreCounter');
+var INFO_BAR = exports.INFO_BAR = document.getElementById('infoBar');
+var GAME_LOST_DIV = exports.GAME_LOST_DIV = document.getElementById('gameLosDiv');
+var FINAL_SCORE_SPAN = exports.FINAL_SCORE_SPAN = document.getElementById('finalScore');
+
 //socket events 
 var ENTERGAME_REQUEST = exports.ENTERGAME_REQUEST = 'ENTERGAME_REQUEST';
 var ENTERGAME_RESPONSE = exports.ENTERGAME_RESPONSE = 'ENTERGAME_RESPONSE';

@@ -7,7 +7,10 @@ import {
     API_URL,
     INITIALIZE, UPDATE, REMOVE, GAME_LOST, EVENT_HAPPENED, 
     START_PAGE,
-    PLAYER_NAME 
+    PLAYER_NAME, 
+    INFO_BAR,
+    GAME_LOST_DIV,
+    FINAL_SCORE_SPAN
 } from './constants';
 /**
  * @class Game 
@@ -282,12 +285,12 @@ class Game {
     }
 
     /**
-     * //@TODO
+     * 
      * @param {*} inWidth  width to resize to
      * @param {*} inHeight height to resize to
      */
     resize( inWidth, inHeight ) {
-        // TODO: implement the function // currently not working
+        
         this.camera.aspect = inWidth / inHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize( inWidth, inHeight );
@@ -301,7 +304,6 @@ class Game {
      * @description This function handles the game start event
      */
     handleGameStarted( data ) {
-        console.log
         this.selfId = data.selfId;
     }
 
@@ -347,7 +349,10 @@ class Game {
 
         data.ship.forEach( ( ship, idx ) => {
             if ( this.playerList[ ship.id ] ) {
-                this.playerList[ ship.id ].update( ship.position, ship.angle, ship.score, ship.lives, ship.speed );
+                this.playerList[ ship.id ].update( ship.position, ship.angle, ship.speed );
+                if( ship.id === this.selfId ) {
+                    this.playerList[ ship.id ].updateScoreAndLives( ship.score, ship.lives );
+                }
             }
         } );
 
@@ -381,13 +386,15 @@ class Game {
     }
 
     /**
-     * //TODO
+     * 
      * @param {*} data data from the server
      * @description This function handles the game over event from the server
      */
     handleGameEnded( data ) {
-        console.log( 'game over bitch', data );
-        //TODO : implement game over logic and UI
+        
+        GAME_LOST_DIV.style.display = 'block';
+        FINAL_SCORE_SPAN.innerHTML = data.score; 
+
     }
 
 
@@ -425,9 +432,12 @@ class Game {
         var that = this;
         xhttp.onreadystatechange = function () {
             if ( this.readyState == 4 && this.status == 200 ) {
+
                 START_PAGE.style.display = 'none';
+                INFO_BAR.style.display = 'block';
                 var resJson = JSON.parse( this.responseText );
                 that.socket.emit( ENTERGAME_REQUEST, { playerId: resJson.id, playerName: resJson.name, color: resJson.color } );
+
             }
         };
         xhttp.open( 'GET', `${API_URL}/users?${data}`, true );
