@@ -36,6 +36,7 @@ class Ship extends Entity {
         this.angle = 0.0;
         this.rotation = new Euler(0, 0, 0, 'XYZ');
         this.socketId = socketId;
+        this.bombTimer = 0;     // used for debouncing the bombs
 
     }
 
@@ -95,8 +96,10 @@ class Ship extends Entity {
         this.rotation.y += this.angle;
         var shipDisplacement = (new Vector3(0, 0, -0.75)).applyEuler( this.rotation ).multiplyScalar( 10.0 * this.speed );
         this.position.add( shipDisplacement );
-        if(this.pressingAttack) {
-            this.throwBomb();
+        this.bombTimer++; 
+        if(this.pressingAttack && this.bombTimer > 10) {
+            this.throwBomb(); 
+            this.bombTimer = 0; 
         }
 
     }

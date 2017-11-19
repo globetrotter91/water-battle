@@ -18,7 +18,8 @@ class Bomb {
 
         this.geometry = new THREE.IcosahedronGeometry( 20, 2 );
         for ( var i = 0, j = this.geometry.faces.length; i < j; i++ ) {
-            this.geometry.faces[ i ].color.setHex( Math.random() * 0xffffff );
+            // this.geometry.faces[ i ].color.setHex( Math.random() * 0xffffff );
+            this.geometry.faces[ i ].color.setHex( 0xa9a9a9 );
         }
 
         this.material = new THREE.MeshPhongMaterial( {

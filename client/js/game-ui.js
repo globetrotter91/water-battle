@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -70,7 +70,42 @@
 "use strict";
 
 
-var _Window = __webpack_require__(1);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var URL = exports.URL = window.location.protocol + '//' + window.location.host;
+var API_URL = exports.API_URL = window.location.protocol + '//' + window.location.host + '/api';
+var START_PAGE = exports.START_PAGE = document.getElementById('startPage');
+var START_BUTTON = exports.START_BUTTON = document.getElementById('startGameButton');
+var PLAYER_NAME = exports.PLAYER_NAME = document.getElementById('playerName');
+var PLAYER_NAME_SPAN = exports.PLAYER_NAME_SPAN = document.getElementById('username');
+var PLAYER_LIVES_SPAN = exports.PLAYER_LIVES_SPAN = document.getElementById('lifeCounter');
+var PLAYER_SCORE_SPAN = exports.PLAYER_SCORE_SPAN = document.getElementById('scoreCounter');
+var INFO_BAR = exports.INFO_BAR = document.getElementById('infoBar');
+var GAME_LOST_DIV = exports.GAME_LOST_DIV = document.getElementById('gameLosDiv');
+var FINAL_SCORE_SPAN = exports.FINAL_SCORE_SPAN = document.getElementById('finalScore');
+
+//socket events 
+var ENTERGAME_REQUEST = exports.ENTERGAME_REQUEST = 'ENTERGAME_REQUEST';
+var ENTERGAME_RESPONSE = exports.ENTERGAME_RESPONSE = 'ENTERGAME_RESPONSE';
+var DISCONNECT = exports.DISCONNECT = 'disconnect';
+var EVAL_SERVER = exports.EVAL_SERVER = 'EVAL_SERVER';
+var EVAL_SERVER_RESPONSE = exports.EVAL_SERVER_RESPONSE = 'EVAL_SERVER_RESPONSE';
+var INITIALIZE = exports.INITIALIZE = 'INITIALIZE';
+var UPDATE = exports.UPDATE = 'UPDATE';
+var REMOVE = exports.REMOVE = 'REMOVE';
+var EVENT_HAPPENED = exports.EVENT_HAPPENED = 'EVENT_HAPPENED';
+var COLOR_SELECTED = exports.COLOR_SELECTED = 'COLOR_SELECTED';
+var GAME_LOST = exports.GAME_LOST = 'GAME_LOST';
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _Window = __webpack_require__(2);
 
 var _Window2 = _interopRequireDefault(_Window);
 
@@ -82,7 +117,7 @@ var windowObj = new _Window2.default(0, 0);
 windowObj.initialize();
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -94,11 +129,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Game = __webpack_require__(2);
+var _Game = __webpack_require__(3);
 
 var _Game2 = _interopRequireDefault(_Game);
 
-var _constants = __webpack_require__(6);
+var _constants = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -187,7 +222,7 @@ var Window = function () {
 exports.default = Window;
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -199,19 +234,19 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Ocean = __webpack_require__(3);
+var _Ocean = __webpack_require__(4);
 
 var _Ocean2 = _interopRequireDefault(_Ocean);
 
-var _Player = __webpack_require__(4);
+var _Player = __webpack_require__(5);
 
 var _Player2 = _interopRequireDefault(_Player);
 
-var _Bomb = __webpack_require__(5);
+var _Bomb = __webpack_require__(6);
 
 var _Bomb2 = _interopRequireDefault(_Bomb);
 
-var _constants = __webpack_require__(6);
+var _constants = __webpack_require__(0);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -699,7 +734,7 @@ var Game = function () {
 exports.default = Game;
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -784,7 +819,7 @@ var Ocean = function () {
 exports.default = Ocean;
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -796,7 +831,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _constants = __webpack_require__(6);
+var _constants = __webpack_require__(0);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -939,7 +974,7 @@ var Player = function () {
 exports.default = Player;
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -974,7 +1009,8 @@ var Bomb = function () {
 
         this.geometry = new THREE.IcosahedronGeometry(20, 2);
         for (var i = 0, j = this.geometry.faces.length; i < j; i++) {
-            this.geometry.faces[i].color.setHex(Math.random() * 0xffffff);
+            // this.geometry.faces[ i ].color.setHex( Math.random() * 0xffffff );
+            this.geometry.faces[i].color.setHex(0xa9a9a9);
         }
 
         this.material = new THREE.MeshPhongMaterial({
@@ -1037,41 +1073,6 @@ var Bomb = function () {
 }();
 
 exports.default = Bomb;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var URL = exports.URL = window.location.protocol + '//' + window.location.host;
-var API_URL = exports.API_URL = window.location.protocol + '//' + window.location.host + '/api';
-var START_PAGE = exports.START_PAGE = document.getElementById('startPage');
-var START_BUTTON = exports.START_BUTTON = document.getElementById('startGameButton');
-var PLAYER_NAME = exports.PLAYER_NAME = document.getElementById('playerName');
-var PLAYER_NAME_SPAN = exports.PLAYER_NAME_SPAN = document.getElementById('username');
-var PLAYER_LIVES_SPAN = exports.PLAYER_LIVES_SPAN = document.getElementById('lifeCounter');
-var PLAYER_SCORE_SPAN = exports.PLAYER_SCORE_SPAN = document.getElementById('scoreCounter');
-var INFO_BAR = exports.INFO_BAR = document.getElementById('infoBar');
-var GAME_LOST_DIV = exports.GAME_LOST_DIV = document.getElementById('gameLosDiv');
-var FINAL_SCORE_SPAN = exports.FINAL_SCORE_SPAN = document.getElementById('finalScore');
-
-//socket events 
-var ENTERGAME_REQUEST = exports.ENTERGAME_REQUEST = 'ENTERGAME_REQUEST';
-var ENTERGAME_RESPONSE = exports.ENTERGAME_RESPONSE = 'ENTERGAME_RESPONSE';
-var DISCONNECT = exports.DISCONNECT = 'disconnect';
-var EVAL_SERVER = exports.EVAL_SERVER = 'EVAL_SERVER';
-var EVAL_SERVER_RESPONSE = exports.EVAL_SERVER_RESPONSE = 'EVAL_SERVER_RESPONSE';
-var INITIALIZE = exports.INITIALIZE = 'INITIALIZE';
-var UPDATE = exports.UPDATE = 'UPDATE';
-var REMOVE = exports.REMOVE = 'REMOVE';
-var EVENT_HAPPENED = exports.EVENT_HAPPENED = 'EVENT_HAPPENED';
-var COLOR_SELECTED = exports.COLOR_SELECTED = 'COLOR_SELECTED';
-var GAME_LOST = exports.GAME_LOST = 'GAME_LOST';
 
 /***/ })
 /******/ ]);
