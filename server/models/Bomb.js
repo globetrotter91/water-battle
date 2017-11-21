@@ -17,7 +17,7 @@ class Bomb extends Entity {
 	 * @param {*} angle angle at which the bomb was fired
 	 * @param {*} parent parent of the bomb, the ship from which the bomb was initiated
 	 */
-    constructor(position, parent, rotation) {
+    constructor(position, parent, rotation, shotAngle) {
 
 		super(position);
 		var t = new Date().getTime().toString(); 
@@ -27,6 +27,7 @@ class Bomb extends Entity {
 		this.angle = Math.PI / 2;
 		this.toRemove = false;	
 		this.rotation = rotation;
+		this.shotAngle = shotAngle || Math.PI / 4;
 		
     }
 
@@ -41,7 +42,8 @@ class Bomb extends Entity {
 		this.velocity = (new Vector3(0.75, 0.5, 0)).applyEuler( this.rotation ).multiplyScalar( 15.0 );
 		// gravitational y component for the projectile.
 		// 0.05 kinda gravity v = u + at; [y component at least]
-		this.velocity.y = ( this.velocity.y * Math.sin(Math.PI/4) ) - ( 0.05 * this.timer );
+		//this.velocity.x = ( this.velocity.x * Math.cos(this.shotAngle) ) + ( 0.3 * this.timer );
+		this.velocity.y = ( this.velocity.y * Math.sin(this.shotAngle) ) - ( 0.05 * this.timer );
 
 		this.position = this.position.add(this.velocity);
 		

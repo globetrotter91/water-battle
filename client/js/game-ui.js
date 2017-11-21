@@ -382,9 +382,17 @@ var Game = function () {
                                     _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'up', state: true });
                                 } // up
 
-                                else if (event.keyCode === 32) {
-                                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack', state: true });
-                                    } // space
+                                else if (event.keyCode === 13) {
+                                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack60', state: true });
+                                    } // enter
+
+                                    else if (event.keyCode === 16) {
+                                            _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack45', state: true });
+                                        } // shift
+
+                                        else if (event.keyCode === 32) {
+                                                _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack30', state: true });
+                                            } // space
                 }
             };
 
@@ -410,9 +418,17 @@ var Game = function () {
                                     _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'up', state: false });
                                 } // up
 
-                                else if (event.keyCode === 32) {
-                                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack', state: false });
-                                    } // space
+                                else if (event.keyCode === 13) {
+                                        _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack60', state: false });
+                                    } // enter
+
+                                    else if (event.keyCode === 16) {
+                                            _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack45', state: false });
+                                        } // shift
+
+                                        else if (event.keyCode === 32) {
+                                                _this.socket.emit(_constants.EVENT_HAPPENED, { inputId: 'attack30', state: false });
+                                            } // space
                 }
             };
         }

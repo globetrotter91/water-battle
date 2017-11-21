@@ -35,6 +35,7 @@ class Ship extends Entity {
         this.speed = 0.0;
         this.angle = 0.0;
         this.rotation = new Euler(0, 0, 0, 'XYZ');
+        this.shootAngle = Math.PI / 4;      // default value of shoot angle
         this.socketId = socketId;
         this.bombTimer = 0;     // used for debouncing the bombs
 
@@ -98,7 +99,7 @@ class Ship extends Entity {
         this.position.add( shipDisplacement );
         this.bombTimer++; 
         if(this.pressingAttack && this.bombTimer > 10) {
-            this.throwBomb(); 
+            this.throwBomb(this.shootAngle); 
             this.bombTimer = 0; 
         }
 
@@ -110,7 +111,7 @@ class Ship extends Entity {
     throwBomb() {
 
         let position = new Vector(this.position.X, this.position.Y, this.position.Z);
-        let bomb = new Bomb(position, this.id, this.rotation);
+        let bomb = new Bomb(position, this.id, this.rotation, this.shootAngle);
         bomb.initiate(); 
 
     }
@@ -168,18 +169,34 @@ Ship.onConnect = ( socket , playerId, name, color, position ) => {
     ship.initiate();
 
     socket.on(EVENT_HAPPENED, (data) => {
-		if(data.inputId === 'left')
-			ship.pressingLeft = data.state;
-		else if(data.inputId === 'right')
-			ship.pressingRight = data.state;
-		else if(data.inputId === 'up')
-			ship.pressingUp = data.state;
-		else if(data.inputId === 'down')
-			ship.pressingDown = data.state;
-		else if(data.inputId === 'attack')
+		if ( data.inputId === 'left' ) {
+            ship.pressingLeft = data.state;
+        }			
+		else if( data.inputId === 'right' ) {
+            ship.pressingRight = data.state;
+        }			
+		else if( data.inputId === 'up' ) {
+            ship.pressingUp = data.state;
+        }			
+		else if( data.inputId === 'down' ) {
+            ship.pressingDown = data.state;
+        }			
+		else if( data.inputId === 'attack30' || data.inputId === 'attack45' || data.inputId === 'attack60' ) {
             ship.pressingAttack = data.state;
-		else if(data.inputId === 'mouseAngle')
-			ship.mouseAngle = data.state;
+            if( data.inputId === 'attack30' ) {
+                ship.shootAngle = Math.PI / 6;
+            }                
+            else if( data.inputId === 'attack60' ) {
+                ship.shootAngle = Math.PI / 3;
+            }
+            else {
+                ship.shootAngle = Math.PI / 4
+            }
+        }
+		else if( data.inputId === 'mouseAngle' ) {
+            ship.mouseAngle = data.state;
+        }
+			
     } );
 
     socket.emit( INITIALIZE, {

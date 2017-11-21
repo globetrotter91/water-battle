@@ -129,8 +129,16 @@ class Game {
                     this.socket.emit( EVENT_HAPPENED, { inputId: 'up', state: true } );
                 } // up
 
+                else if ( event.keyCode === 13 ) {
+                    this.socket.emit( EVENT_HAPPENED, { inputId: 'attack60', state: true } );
+                } // enter
+
+                else if ( event.keyCode === 16 ) {
+                    this.socket.emit( EVENT_HAPPENED, { inputId: 'attack45', state: true } );
+                } // shift
+
                 else if ( event.keyCode === 32 ) {
-                    this.socket.emit( EVENT_HAPPENED, { inputId: 'attack', state: true } );
+                    this.socket.emit( EVENT_HAPPENED, { inputId: 'attack30', state: true } );
                 } // space
             }
 
@@ -158,8 +166,16 @@ class Game {
                     this.socket.emit( EVENT_HAPPENED, { inputId: 'up', state: false } );
                 } // up
 
+                else if ( event.keyCode === 13 ) {
+                    this.socket.emit( EVENT_HAPPENED, { inputId: 'attack60', state: false } );
+                } // enter
+
+                else if ( event.keyCode === 16 ) {
+                    this.socket.emit( EVENT_HAPPENED, { inputId: 'attack45', state: false } );
+                } // shift
+
                 else if ( event.keyCode === 32 ) {
-                    this.socket.emit( EVENT_HAPPENED, { inputId: 'attack', state: false } );
+                    this.socket.emit( EVENT_HAPPENED, { inputId: 'attack30', state: false } );
                 } // space
             }
 
